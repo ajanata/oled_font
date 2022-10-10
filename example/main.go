@@ -4,7 +4,7 @@ import (
 	"machine"
 	"time"
 
-	font "github.com/Nondzu/ssd1306_font"
+	font "github.com/ajanata/oled_font"
 	"tinygo.org/x/drivers/ssd1306"
 )
 
@@ -20,7 +20,7 @@ func main() {
 	dev.ClearDisplay()
 
 	//font library init
-	display := font.NewDisplay(dev)
+	display := font.NewDisplay(&dev)
 	display.Configure(font.Config{FontType: font.FONT_7x10}) //set font here
 
 	display.YPos = 20                 // set position Y
@@ -28,6 +28,6 @@ func main() {
 	display.PrintText("HELLO WORLD!") // print text
 
 	for {
-
+		time.Sleep(time.Hour)
 	}
 }

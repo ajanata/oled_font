@@ -1,13 +1,12 @@
-// Package ssd1306_font implements a fonts library for the SSD1306 driver tinygo.org/x/drivers/ssd1306
-//
-//
+// Package ssd1306_font implements a fonts library for OLED drivers such as the SSD1306 driver
+// tinygo.org/x/drivers/ssd1306, however it should work for any implementation of drivers.Displayer. You may need to
+// adjust the PixelOn and PixelOff colors for your specific device.
 
 package ssd1306font
 
 import (
 	"image/color"
-
-	"tinygo.org/x/drivers/ssd1306"
+	"tinygo.org/x/drivers"
 )
 
 // Display wraps
@@ -15,7 +14,7 @@ type Display struct {
 	fontType   uint8
 	fontWidth  uint8 /*!< Font width in pixels */
 	fontHeight uint8 /*!< Font height in pixels */
-	device     ssd1306.Device
+	device     drivers.Displayer
 	XPos       int16
 	YPos       int16
 }
@@ -33,8 +32,13 @@ const (
 	FONT_16x26 = 0x03
 )
 
-// NewI2C creates a new SSD1306 connection. The I2C wire must already be configured.
-func NewDisplay(device ssd1306.Device) Display {
+// PixelOn is used when a pixel should be "on" for the font. The default likely works for all common OLED drivers.
+var PixelOn = color.RGBA{R: 1}
+
+// PixelOff is used when a pixel should be "off" for the font. The default should work well for all displays.
+var PixelOff = color.RGBA{}
+
+func NewDisplay(device drivers.Displayer) Display {
 	return Display{device: device}
 }
 
@@ -92,9 +96,9 @@ func (d *Display) PrintChar(char byte) {
 
 			pixel = pixel & (0x8000 >> j)
 			if pixel != 0 {
-				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), color.RGBA{R: 1})
+				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), PixelOn)
 			} else {
-				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), color.RGBA{R: 0})
+				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), PixelOff)
 			}
 		}
 	}
@@ -198,7 +202,7 @@ var Font6x8 = [...]uint16{
 	0x4000, 0xa800, 0x1000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // ~
 }
 
-//start from 32[space] up to 126[~] = offset -32
+// start from 32[space] up to 126[~] = offset -32
 var Font7x10 = [...]uint16{
 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, // space
 	0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x0000, 0x1000, 0x0000, 0x0000, // !

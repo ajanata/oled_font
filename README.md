@@ -1,17 +1,19 @@
-# ssd1306 font
+# OLED font
 
-### This is  lite ssd1306 font library using TinyGo. Tested on Raspberry Pi Pico.
+### This is a lite OLED font library using TinyGo. Tested on Raspberry Pi Pico.
 
+This should actually work with anything that implements `drivers.Displayer`, though you may need to adjust the `PixelOn`
+and `PixelOff` colors.
 
 Example:
-```
+```golang
 package main
 
 import (
 	"machine"
 	"time"
 
-	font "github.com/Nondzu/ssd1306_font"
+	font "github.com/ajanata/oled_font"
 	"tinygo.org/x/drivers/ssd1306"
 )
 
@@ -27,7 +29,7 @@ func main() {
 	dev.ClearDisplay()
 
 	//font library init
-	display := font.NewDisplay(dev)
+	display := font.NewDisplay(&dev)
 	display.Configure(font.Config{FontType: font.FONT_7x10}) //set font here
 
 	display.YPos = 20                 // set position Y
@@ -35,13 +37,10 @@ func main() {
 	display.PrintText("HELLO WORLD!") // print text
 
 	for {
-
+		time.Sleep(time.Hour)
 	}
 }
-
 ```
-
-
 
 
 #### FONT_6x8 

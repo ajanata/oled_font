@@ -1,4 +1,4 @@
-module github.com/Nondzu/ssd1306_font
+module github.com/ajanata/oled_font
 
 go 1.18
 
