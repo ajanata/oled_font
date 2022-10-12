@@ -65,9 +65,17 @@ func (d *Display) Configure(cfg Config) {
 }
 
 func (d *Display) PrintText(str string) {
+	d.PrintTextEx(str, false)
+}
+
+func (d *Display) PrintTextInverse(str string) {
+	d.PrintTextEx(str, true)
+}
+
+func (d *Display) PrintTextEx(str string, inverse bool) {
 	tmp := d.XPos
 	for _, char := range str {
-		d.PrintChar(byte(char))
+		d.PrintCharEx(byte(char), inverse)
 		d.XPos += int16(d.fontWidth)
 	}
 	d.XPos = tmp
@@ -75,7 +83,17 @@ func (d *Display) PrintText(str string) {
 }
 
 func (d *Display) PrintChar(char byte) {
+	d.PrintCharEx(char, false)
+}
 
+func (d *Display) PrintCharInverse(char byte) {
+	d.PrintCharEx(char, true)
+}
+
+func (d *Display) PrintCharEx(char byte, inverse bool) {
+	if char < ' ' || char > '~' {
+		char = '?'
+	}
 	font := int16(char-32) * int16(d.fontHeight)
 	for i := int16(0); i < int16(d.fontHeight); i++ {
 		for j := int16(0); j < int16(d.fontWidth); j++ {
@@ -95,10 +113,14 @@ func (d *Display) PrintChar(char byte) {
 			}
 
 			pixel = pixel & (0x8000 >> j)
+			on, off := PixelOn, PixelOff
+			if inverse {
+				on, off = off, on
+			}
 			if pixel != 0 {
-				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), PixelOn)
+				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), on)
 			} else {
-				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), PixelOff)
+				d.device.SetPixel(int16(j+d.XPos), int16(i+d.YPos), off)
 			}
 		}
 	}
