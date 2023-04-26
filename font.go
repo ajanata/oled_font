@@ -6,6 +6,7 @@ package ssd1306font
 
 import (
 	"image/color"
+
 	"tinygo.org/x/drivers"
 )
 
@@ -33,7 +34,7 @@ const (
 )
 
 // PixelOn is used when a pixel should be "on" for the font. The default likely works for all common OLED drivers.
-var PixelOn = color.RGBA{R: 1}
+var PixelOn = color.RGBA{R: 0xFF, G: 0xFF, B: 0xFF}
 
 // PixelOff is used when a pixel should be "off" for the font. The default should work well for all displays.
 var PixelOff = color.RGBA{}
